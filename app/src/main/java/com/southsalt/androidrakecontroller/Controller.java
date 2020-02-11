@@ -51,6 +51,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private View mJogBackBtn;
     private View mStartBtn;
     private View mStopBtn;
+    private StringBuilder mStringBuilder = new StringBuilder();
 
     private enum Connected {False, Pending, True}
 
@@ -297,19 +298,21 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
 
         String dataString = new String(data);
         mReceiveText.setText(new String(data));
-        StringBuilder stringBuilder = new StringBuilder();
+
         if (dataString.startsWith("<")) {
-            stringBuilder.append(dataString);
+            mStringBuilder.append(dataString);
             Log.i(TAG, new String(data));
         } else if (dataString.contains(">")) {
-            stringBuilder.append(dataString);
-
-            command = new String(stringBuilder);
+            mStringBuilder.append(dataString);
+            //Remove the start and end characters
+            mStringBuilder.delete(0,1);
+            mStringBuilder.delete(mStringBuilder.indexOf(">"),mStringBuilder.length());
+            command = new String(mStringBuilder);
             Log.i(TAG, command);
             newData = true;
 
         } else {
-            stringBuilder.append(dataString);
+            mStringBuilder.append(dataString);
             Log.i(TAG, new String(data));
         }
         if (newData) {
@@ -321,6 +324,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
                 Log.e("JSON", "Could not make JSON object");
             }
             newData = false;
+            mStringBuilder = new StringBuilder();
         }
     }
 
