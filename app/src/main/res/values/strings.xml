@@ -1,0 +1,57 @@
+<resources>
+    <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout</string>
+
+    <string name="app_name">South Salt Rake Controller</string>
+    <string name="devices">Bluetooth LE Devices</string>
+    <string name="Unnamed"><![CDATA[<unnamed>]]></string>
+    <string name="label_device_address">Device Address</string>
+    <string name="label_state">State:</string>
+    <string name="disconnected">Disconnected</string>
+
+
+
+
+    <string name="location_permission_title">Location permission required</string>
+    <string name="location_permission_message">This app does not use location information, but scanning for Bluetooth LE devices requires this permission</string>
+
+    <string name="location_denied_title">Location permission denied</string>
+    <string name="location_denied_message">As location permission has not been granted, this app cannot scan for Bluetooth LE devices.</string>
+    <string name="pairing_request">PAIRING requested\n-> Perform pairing steps. Connect again</string>
+
+    <!--- Strings that store the messages to be sent via bluetooth when buttons are pressed-->
+    <string name="jog_fwd_cmd"> &lt;{\"jog\":\"fwd\"}&gt; </string>
+    <string name="jog_bck_cmd"> &lt;{\"jog\":\"bck\"}&gt; </string>
+    <string name="jog_stop_cmd"> &lt;{\"jog\":\"stop\"}&gt; </string>
+    <string name="start_cmd"> &lt;{\"start\":\"true\"}&gt;</string>
+    <string name="stop_cmd"> &lt;{\"stop\":\"true\"}&gt;</string>
+    <string name="set_start"> &lt; {\"set":[ </string>
+    <string name="set_finish"> ] &gt; </string>
+    <string name="get_states_cmd"> &lt;{\"get\":\"all\"}&gt;</string>
+    <string name="get_current_cmd"> &lt;{\"get\":\"current\"}&gt;</string>
+
+
+
+    <!--- Strings for storing UI Text-->
+    <string name="state_time_txt">Time</string>
+    <string name="jog_fwd_btn">Forward</string>
+    <string name="jog_bck_btn">Back</string>
+    <string name="select_state"> Select State</string>
+    <string name="refresh_btn"> Refresh </string>
+    <string name="direction_btn"> Forward Direction</string>
+    <string name="gate_state_btn">Gate Up</string>
+    <string name="set_state_btn">Update State</string>
+    <string name="motor_speed_txtbox">Motor Speed</string>
+    <string name="spinner_text">State</string>
+    <string name="device_name">Device: </string>
+    <string name="connected">Connected: </string>
+    <string name="current_state_label">Current State: </string>
+    <string name="speed_label">Current Speed: </string>
+    <string name="current_time_label">Time Running:</string>
+    <string name="update_btn">Update</string>
+    <string name="start_btn">Start</string>
+    <string name="stop_btn">Stop</string>
+
+
+</resources>
+
+
