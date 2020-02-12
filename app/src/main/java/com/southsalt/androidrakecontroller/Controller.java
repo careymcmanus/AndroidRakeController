@@ -20,7 +20,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +55,11 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private View mJogBackBtn;
     private View mStartBtn;
     private View mStopBtn;
+    private Spinner mStateSpinner;
+    
     private StringBuilder mStringBuilder = new StringBuilder();
+    
+   
 
     private enum Connected {False, Pending, True}
 
@@ -66,6 +74,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
      * Motor State Variables
      */
     private List<MotorState> motorStates = new ArrayList<>();
+    private ArrayAdapter<MotorState> mMotorStateListAdapter;
     private int currentState;
 
     private SerialSocket socket;
@@ -156,6 +165,8 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.controller_layout, container, false);
+
+        mMotorStateListAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, motorStates);
         mReceiveText = view.findViewById(R.id.receive_text);
         mReceiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
 
@@ -166,6 +177,23 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         mJogBackBtn = view.findViewById(R.id.back_btn);
         mStartBtn = view.findViewById(R.id.start_btn);
         mStopBtn = view.findViewById(R.id.stop_btn);
+        mStateSpinner = view.findViewById(R.id.state_spinner);
+        mMotorStateListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        
+        mStateSpinner.setAdapter(mMotorStateListAdapter);
+        
+        mStateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                MotorState motorState = (MotorState) parent.getSelectedItem();
+                displayMotorStateData(motorState);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         /*
@@ -202,6 +230,9 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
 
 
         return view;
+    }
+
+    private void displayMotorStateData(MotorState motorState) {
     }
 
     public void jogCommand(MotionEvent event, boolean direction){
@@ -318,13 +349,14 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         if (newData) {
             Log.i(TAG, command);
             try {
-                JSONObject reader = new JSONObject(new String(data));
+                JSONObject reader = new JSONObject(command);
                 commandHandler(reader);
             } catch (JSONException e) {
                 Log.e("JSON", "Could not make JSON object");
             }
             newData = false;
             mStringBuilder = new StringBuilder();
+            command = "";
         }
     }
 
@@ -349,6 +381,12 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
             } catch (JSONException e){
 
             }
+        } else if (command.has("current")){
+            try{
+                currentState = command.getInt("current");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -369,7 +407,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         }
         try{
             MotorState newState = new MotorState(state.getString("name"), state.getInt("speed"),
-                    state.getInt("time"), state.getBoolean("direction"), state.getBoolean("gate"));
+                    state.getInt("time"), state.getInt("direction")>0, state.getInt("gate")>0);
             motorStates.add(newState);
         } catch (JSONException e){
 
