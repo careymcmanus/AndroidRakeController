@@ -24,7 +24,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,8 +60,11 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private Spinner mStateSpinner;
     
     private StringBuilder mStringBuilder = new StringBuilder();
-    
-   
+    private SeekBar mSpeedSeekbar;
+    private SeekBar mTimeSeekbar;
+    private Switch mGateSwitch;
+    private Switch mDirSwitch;
+
 
     private enum Connected {False, Pending, True}
 
@@ -167,6 +172,8 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         View view = inflater.inflate(R.layout.controller_layout, container, false);
 
         mMotorStateListAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, motorStates);
+        mMotorStateListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         mReceiveText = view.findViewById(R.id.receive_text);
         mReceiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
 
@@ -179,6 +186,11 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         mStopBtn = view.findViewById(R.id.stop_btn);
         mStateSpinner = view.findViewById(R.id.state_spinner);
         mMotorStateListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mSpeedSeekbar = view.findViewById(R.id.speed_seekbar);
+        mTimeSeekbar = view.findViewById(R.id.time_seekbar);
+        mDirSwitch = view.findViewById(R.id.direction_switch);
+        mGateSwitch = view.findViewById(R.id.gate_switch);
         
         mStateSpinner.setAdapter(mMotorStateListAdapter);
         
@@ -233,6 +245,10 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     }
 
     private void displayMotorStateData(MotorState motorState) {
+        mSpeedSeekbar.setProgress(motorState.mSpeed);
+        mTimeSeekbar.setProgress(motorState.stateTime);
+        mDirSwitch.setChecked(motorState.mDirection);
+        mGateSwitch.setChecked(motorState.gate);
     }
 
     public void jogCommand(MotionEvent event, boolean direction){
@@ -391,9 +407,11 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     }
 
     private void updateState(JSONObject state){
+        boolean hasState = false;
         for (MotorState mState : motorStates){
             try{
-                if (mState.name == state.getString("name")){
+                if (mState.name.equals(state.getString("name"))){
+                    hasState = true;
                     mState.mSpeed = state.getInt("speed");
                     mState.gate = state.getInt("gate")>0;
                     mState.mDirection = state.getInt("direction")>0;
@@ -405,12 +423,14 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
 
             }
         }
-        try{
-            MotorState newState = new MotorState(state.getString("name"), state.getInt("speed"),
-                    state.getInt("time"), state.getInt("direction")>0, state.getInt("gate")>0);
-            motorStates.add(newState);
-        } catch (JSONException e){
+        if (!hasState) {
+            try {
+                MotorState newState = new MotorState(state.getString("name"), state.getInt("speed"),
+                        state.getInt("time"), state.getInt("direction") > 0, state.getInt("gate") > 0);
+                motorStates.add(newState);
+            } catch (JSONException e) {
 
+            }
         }
     }
 
