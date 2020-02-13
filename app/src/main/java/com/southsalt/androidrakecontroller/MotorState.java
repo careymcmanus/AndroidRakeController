@@ -4,8 +4,8 @@ public class MotorState {
     String name;
     boolean mDirection;
     boolean gate;
-    int mSpeed;
-    int stateTime;
+    Integer mSpeed;
+    Integer stateTime;
 
     public MotorState(String name, int mSpeed, int stateTime, boolean mDirection, boolean gate){
         this.name = name;

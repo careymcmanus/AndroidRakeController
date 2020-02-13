@@ -21,10 +21,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -41,7 +39,6 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -54,7 +51,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private TextView mConnectedText;
     private Button mRefreshButton;
     private TextView mReceiveText;
-    private View mSendBtn;
+    private View mUpdateBtn;
     private View mJogFwdBtn;
     private View mJogBackBtn;
     private View mStartBtn;
@@ -66,6 +63,9 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private SeekBar mTimeSeekbar;
     private Switch mGateSwitch;
     private Switch mDirSwitch;
+    private TextView mCurrentStateText;
+    private TextView mCurrentSpeedValue;
+    private TextView mCurrentTimeValue;
 
 
     private enum Connected {False, Pending, True}
@@ -83,7 +83,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private ArrayList<MotorState> motorStates = new ArrayList<>();
     private ArrayAdapter<MotorState> mMotorStateListAdapter;
     private MotorState mEditingState;
-    private int currentState;
+    private Integer currentState;
 
     private SerialSocket socket;
     private SerialService service;
@@ -182,12 +182,17 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
 
         mConnectedText = view.findViewById(R.id.connected_label);
         mDeviceNameText = view.findViewById(R.id.device_name_label);
-        mSendBtn = view.findViewById(R.id.refresh_btn);
+        mUpdateBtn = view.findViewById(R.id.refresh_btn);
         mJogFwdBtn = view.findViewById(R.id.fwd_btn);
         mJogBackBtn = view.findViewById(R.id.back_btn);
         mStartBtn = view.findViewById(R.id.start_btn);
         mStopBtn = view.findViewById(R.id.stop_btn);
         Button stateSelectBtn = view.findViewById(R.id.select_state_btn);
+
+        mCurrentStateText = view.findViewById(R.id.current_state_value);
+        mCurrentSpeedValue = view.findViewById(R.id.current_speed_value_text);
+        mCurrentTimeValue = view.findViewById(R.id.current_time_value);
+
         TextView motorSpeedValue = view.findViewById(R.id.motor_speed_value);
         TextView motorTimeValue = view.findViewById(R.id.motor_time_value);
         TextView editingStateText = view.findViewById(R.id.state_text);
@@ -199,6 +204,9 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         mDirSwitch = view.findViewById(R.id.direction_switch);
         mGateSwitch = view.findViewById(R.id.gate_switch);
 
+        /*
+         * Builds and alert dialog box for selecting state to edit
+         */
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Choose a State");
         builder.setAdapter(mMotorStateListAdapter, new DialogInterface.OnClickListener() {
@@ -219,19 +227,17 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         AlertDialog dialog = builder.create();
         stateSelectBtn.setOnClickListener(v -> {dialog.show();});
 
-        
-
-
         /*
          * Set any text that is dynamic
          */
         mDeviceNameText.setText(getString(R.string.device_name)+mDeviceName);
         updateConnectedText();
+        updateCurrentStateText();
 
         /*
          * Set the on click listeners for the various buttons
          */
-        mSendBtn.setOnClickListener(v -> getStates());
+        mUpdateBtn.setOnClickListener(v -> getStates());
         mStartBtn.setOnClickListener(v -> send(getString(R.string.start_cmd)));
         mStopBtn.setOnClickListener(v -> send(getString(R.string.stop_cmd)));
 
@@ -253,17 +259,22 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
                 return false;
             }
         });
-
-
         return view;
     }
 
-    private void displayMotorStateData(MotorState motorState) {
-        mSpeedSeekbar.setProgress(motorState.mSpeed);
-        mTimeSeekbar.setProgress(motorState.stateTime);
-        mDirSwitch.setChecked(motorState.mDirection);
-        mGateSwitch.setChecked(motorState.gate);
+    private void updateCurrentStateText() {
+        if (currentState == null || currentState > motorStates.size())
+            return;
+        MotorState state = motorStates.get(currentState);
+        if (state == null)
+            return;
+        else{
+            mCurrentStateText.setText(state.name);
+            mCurrentSpeedValue.setText(state.mSpeed.toString());
+            mCurrentTimeValue.setText(state.stateTime.toString());
+        }
     }
+
 
     public void jogCommand(MotionEvent event, boolean direction){
         switch (event.getAction()){
@@ -361,6 +372,10 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         mReceiveText.setText(new String(data));
 
         if (dataString.startsWith("<")) {
+            if (dataString.contains(">")){
+                command = dataString.substring(1, dataString.indexOf(">"));
+                newData = true;
+            }
             mStringBuilder.append(dataString);
             Log.i(TAG, new String(data));
         } else if (dataString.contains(">")) {
@@ -414,6 +429,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         } else if (command.has("current")){
             try{
                 currentState = command.getInt("current");
+                updateCurrentStateText();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -453,10 +469,12 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     }
     private void getStates(){
         send(getString(R.string.get_states_cmd));
+        getCurrentState();
     }
 
     private void getCurrentState(){
         send(getString(R.string.get_current_cmd));
+
     }
 
     /*
