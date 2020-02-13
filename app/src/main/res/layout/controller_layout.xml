@@ -59,9 +59,9 @@
         android:layout_height="30dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="24dp"
+        android:max="400"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="@+id/select_state_btn"
         app:layout_constraintTop_toBottomOf="@+id/current_state_label" />
 
     <SeekBar
@@ -69,6 +69,7 @@
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginTop="40dp"
+        android:max="1000"
         app:layout_constraintEnd_toEndOf="@+id/speed_seekbar"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/speed_seekbar"
@@ -100,22 +101,6 @@
         android:text="@string/refresh_btn"
         app:layout_constraintEnd_toEndOf="@+id/speed_seekbar"
         app:layout_constraintTop_toBottomOf="@+id/current_state_label" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/select_state"
-        app:layout_constraintStart_toStartOf="@+id/current_state_label"
-        app:layout_constraintTop_toTopOf="@+id/refresh_btn" />
-
-    <Spinner
-        android:id="@+id/state_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/refresh_btn"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toTopOf="@+id/refresh_btn" />
 
     <Button
         android:id="@+id/update_state_button"
@@ -188,4 +173,46 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/time_seekbar"
         app:layout_constraintTop_toBottomOf="@+id/start_btn" />
+
+    <Button
+        android:id="@+id/select_state_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:text="@string/select_state"
+        app:layout_constraintBottom_toBottomOf="@+id/refresh_btn"
+        app:layout_constraintStart_toStartOf="@+id/current_state_label"
+        app:layout_constraintTop_toTopOf="@+id/refresh_btn" />
+
+    <TextView
+        android:id="@+id/state_text_label"
+        android:layout_width="96dp"
+        android:layout_height="19dp"
+        android:text="@string/state_text"
+        app:layout_constraintEnd_toStartOf="@+id/refresh_btn"
+        app:layout_constraintStart_toEndOf="@+id/select_state_btn"
+        app:layout_constraintTop_toTopOf="@+id/select_state_btn" />
+
+    <TextView
+        android:id="@+id/motor_speed_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/motor_speed_label"
+        app:layout_constraintTop_toTopOf="@+id/motor_speed_label" />
+
+    <TextView
+        android:id="@+id/motor_time_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/state_time_label"
+        app:layout_constraintTop_toTopOf="@+id/state_time_label" />
+
+    <TextView
+        android:id="@+id/state_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@+id/state_text_label"
+        app:layout_constraintTop_toBottomOf="@+id/state_text_label" />
 </androidx.constraintlayout.widget.ConstraintLayout>

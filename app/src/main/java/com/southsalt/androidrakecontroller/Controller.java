@@ -3,6 +3,7 @@ package com.southsalt.androidrakecontroller;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.bluetooth.BluetoothAdapter;
@@ -37,6 +38,7 @@ import androidx.fragment.app.Fragment;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +80,9 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     /*
      * Motor State Variables
      */
-    private List<MotorState> motorStates = new ArrayList<>();
+    private ArrayList<MotorState> motorStates = new ArrayList<>();
     private ArrayAdapter<MotorState> mMotorStateListAdapter;
+    private MotorState mEditingState;
     private int currentState;
 
     private SerialSocket socket;
@@ -171,8 +174,8 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.controller_layout, container, false);
 
-        mMotorStateListAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, motorStates);
-        mMotorStateListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mMotorStateListAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, motorStates);
+
 
         mReceiveText = view.findViewById(R.id.receive_text);
         mReceiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
@@ -184,28 +187,39 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         mJogBackBtn = view.findViewById(R.id.back_btn);
         mStartBtn = view.findViewById(R.id.start_btn);
         mStopBtn = view.findViewById(R.id.stop_btn);
-        mStateSpinner = view.findViewById(R.id.state_spinner);
+        Button stateSelectBtn = view.findViewById(R.id.select_state_btn);
+        TextView motorSpeedValue = view.findViewById(R.id.motor_speed_value);
+        TextView motorTimeValue = view.findViewById(R.id.motor_time_value);
+        TextView editingStateText = view.findViewById(R.id.state_text);
+
         mMotorStateListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mSpeedSeekbar = view.findViewById(R.id.speed_seekbar);
         mTimeSeekbar = view.findViewById(R.id.time_seekbar);
         mDirSwitch = view.findViewById(R.id.direction_switch);
         mGateSwitch = view.findViewById(R.id.gate_switch);
-        
-        mStateSpinner.setAdapter(mMotorStateListAdapter);
-        
-        mStateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                MotorState motorState = (MotorState) parent.getSelectedItem();
-                displayMotorStateData(motorState);
-            }
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Choose a State");
+        builder.setAdapter(mMotorStateListAdapter, new DialogInterface.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(DialogInterface dialog, int which) {
+                mEditingState = motorStates.get(which);
+                editingStateText.setText(mEditingState.name);
+                Integer speed = mEditingState.mSpeed;
+                Integer time = mEditingState.stateTime;
+                mSpeedSeekbar.setProgress(speed);
+                motorSpeedValue.setText(speed.toString());
+                mTimeSeekbar.setProgress(time);
+                motorTimeValue.setText(time.toString());
+                mDirSwitch.setChecked(mEditingState.mDirection);
+                mGateSwitch.setChecked(mEditingState.gate);
             }
         });
+        AlertDialog dialog = builder.create();
+        stateSelectBtn.setOnClickListener(v -> {dialog.show();});
+
+        
 
 
         /*
