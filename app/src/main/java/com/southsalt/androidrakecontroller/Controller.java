@@ -266,17 +266,17 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private void updateArduino() {
         if (mEditingState == null)
             return;
-        String message = "<7 \"{\\\"name\\\":"
+        String message = "<7 {\"name\":"
                 + mEditingState.name
-                + ",\\\"speed\\\":"
+                + ",\"speed\":"
                 + mEditingState.mSpeed
-                + ",\\\"time\\\":"
+                + ",\"time\":"
                 + mEditingState.stateTime
-                + ",\\\"dir\\\":"
+                + ",\"dir\":"
                 + mEditingState.mDirection
-                + ",\\\"gate\\\":"
+                + ",\"gate\":"
                 + mEditingState.gate
-                + "}\">";
+                + "}>";
         send(message);
     }
 
