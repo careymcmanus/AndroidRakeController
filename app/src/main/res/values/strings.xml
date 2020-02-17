@@ -19,15 +19,15 @@
     <string name="pairing_request">PAIRING requested\n-> Perform pairing steps. Connect again</string>
 
     <!--- Strings that store the messages to be sent via bluetooth when buttons are pressed-->
-    <string name="jog_fwd_cmd"> &lt;{\"jog\":\"fwd\"}&gt; </string>
-    <string name="jog_bck_cmd"> &lt;{\"jog\":\"bck\"}&gt; </string>
-    <string name="jog_stop_cmd"> &lt;{\"jog\":\"stop\"}&gt; </string>
-    <string name="start_cmd"> &lt;{\"start\":\"true\"}&gt;</string>
-    <string name="stop_cmd"> &lt;{\"stop\":\"true\"}&gt;</string>
-    <string name="set_start"> &lt; {\"set":[ </string>
-    <string name="set_finish"> ] &gt; </string>
-    <string name="get_states_cmd"> &lt;{\"get\":\"all\"}&gt;</string>
-    <string name="get_current_cmd"> &lt;{\"get\":\"current\"}&gt;</string>
+    <string name="stop_cmd"> &lt;0&gt;</string>
+    <string name="start_cmd"> &lt;1&gt;</string>
+    <string name="get_states_cmd"> &lt;2&gt;</string>
+    <string name="get_current_cmd"> &lt;3&gt;</string>
+    <string name="jog_fwd_cmd"> &lt;4&gt; </string>
+    <string name="jog_bck_cmd"> &lt;5&gt; </string>
+    <string name="jog_stop_cmd"> &lt;6&gt; </string>
+    <string name="set_start"> &lt;7 </string>
+    <string name="set_finish"> > &gt; </string>
 
 
 

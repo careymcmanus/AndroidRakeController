@@ -36,7 +36,6 @@ import androidx.fragment.app.Fragment;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -51,7 +50,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
     private TextView mConnectedText;
     private Button mRefreshButton;
     private TextView mReceiveText;
-    private View mUpdateBtn;
+    private View mRefreshBtn;
     private View mJogFwdBtn;
     private View mJogBackBtn;
     private View mStartBtn;
@@ -182,12 +181,14 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
 
         mConnectedText = view.findViewById(R.id.connected_label);
         mDeviceNameText = view.findViewById(R.id.device_name_label);
-        mUpdateBtn = view.findViewById(R.id.refresh_btn);
+        mRefreshBtn = view.findViewById(R.id.refresh_btn);
         mJogFwdBtn = view.findViewById(R.id.fwd_btn);
         mJogBackBtn = view.findViewById(R.id.back_btn);
         mStartBtn = view.findViewById(R.id.start_btn);
         mStopBtn = view.findViewById(R.id.stop_btn);
         Button stateSelectBtn = view.findViewById(R.id.select_state_btn);
+        Button updateBtn = view.findViewById(R.id.update_state_button);
+        updateBtn.setOnClickListener(v -> {updateArduino();});
 
         mCurrentStateText = view.findViewById(R.id.current_state_value);
         mCurrentSpeedValue = view.findViewById(R.id.current_speed_value_text);
@@ -237,7 +238,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         /*
          * Set the on click listeners for the various buttons
          */
-        mUpdateBtn.setOnClickListener(v -> getStates());
+        mRefreshBtn.setOnClickListener(v -> getStates());
         mStartBtn.setOnClickListener(v -> send(getString(R.string.start_cmd)));
         mStopBtn.setOnClickListener(v -> send(getString(R.string.stop_cmd)));
 
@@ -260,6 +261,23 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
             }
         });
         return view;
+    }
+
+    private void updateArduino() {
+        if (mEditingState == null)
+            return;
+        String message = "<7 \"{\\\"name\\\":"
+                + mEditingState.name
+                + ",\\\"speed\\\":"
+                + mEditingState.mSpeed
+                + ",\\\"time\\\":"
+                + mEditingState.stateTime
+                + ",\\\"dir\\\":"
+                + mEditingState.mDirection
+                + ",\\\"gate\\\":"
+                + mEditingState.gate
+                + "}\">";
+        send(message);
     }
 
     private void updateCurrentStateText() {
