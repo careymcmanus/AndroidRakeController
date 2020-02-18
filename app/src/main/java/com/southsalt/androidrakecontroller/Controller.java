@@ -201,7 +201,44 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         mMotorStateListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mSpeedSeekbar = view.findViewById(R.id.speed_seekbar);
+        mSpeedSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Integer value = progress;
+                mEditingState.mSpeed = value;
+                motorSpeedValue.setText(value.toString());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         mTimeSeekbar = view.findViewById(R.id.time_seekbar);
+        mTimeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Integer value = progress;
+                mEditingState.stateTime = value;
+                motorTimeValue.setText(value.toString());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         mDirSwitch = view.findViewById(R.id.direction_switch);
         mGateSwitch = view.findViewById(R.id.gate_switch);
 
@@ -263,21 +300,13 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         return view;
     }
 
+
+
     private void updateArduino() {
         if (mEditingState == null)
             return;
-        String message = "<7 {\"name\":"
-                + mEditingState.name
-                + ",\"speed\":"
-                + mEditingState.mSpeed
-                + ",\"time\":"
-                + mEditingState.stateTime
-                + ",\"dir\":"
-                + mEditingState.mDirection
-                + ",\"gate\":"
-                + mEditingState.gate
-                + "}>";
-        send(message);
+
+        send(getString(R.string.get_current_cmd));
     }
 
     private void updateCurrentStateText() {
