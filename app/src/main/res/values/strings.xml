@@ -26,8 +26,9 @@
     <string name="jog_fwd_cmd"> &lt;4&gt; </string>
     <string name="jog_bck_cmd"> &lt;5&gt; </string>
     <string name="jog_stop_cmd"> &lt;6&gt; </string>
-    <string name="set_start"> &lt;7 </string>
-    <string name="set_finish"> > &gt; </string>
+    <string name="set_start"> &lt;7, </string>
+
+    <string name="set_finish"> &gt; </string>
 
 
 

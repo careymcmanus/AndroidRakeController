@@ -20,8 +20,8 @@
         android:id="@+id/connected_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/connected"
-        app:layout_constraintBottom_toTopOf="@+id/current_state_label"
         app:layout_constraintStart_toStartOf="@+id/device_name_label"
         app:layout_constraintTop_toBottomOf="@+id/device_name_label" />
 
@@ -29,40 +29,41 @@
         android:id="@+id/current_state_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
         android:text="@string/current_state_label"
-        app:layout_constraintStart_toStartOf="@+id/connected_label"
-        app:layout_constraintTop_toBottomOf="@+id/device_name_label" />
+        app:layout_constraintStart_toStartOf="@+id/speed_label"
+        app:layout_constraintTop_toTopOf="@+id/device_name_label" />
 
     <TextView
         android:id="@+id/speed_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="72dp"
+        android:layout_marginTop="8dp"
         android:text="@string/speed_label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/device_name_label" />
+        app:layout_constraintStart_toStartOf="@+id/current_time_label"
+        app:layout_constraintTop_toBottomOf="@+id/current_state_label" />
 
     <TextView
         android:id="@+id/current_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/current_time_label"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/speed_label"
-        app:layout_constraintTop_toTopOf="@+id/connected_label" />
+        app:layout_constraintHorizontal_bias="0.448"
+        app:layout_constraintStart_toEndOf="@+id/connected_label"
+        app:layout_constraintTop_toBottomOf="@+id/speed_label" />
 
     <SeekBar
         android:id="@+id/speed_seekbar"
         android:layout_width="0dp"
         android:layout_height="30dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:max="400"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/select_state_btn"
-        app:layout_constraintTop_toBottomOf="@+id/current_state_label" />
+        app:layout_constraintTop_toBottomOf="@+id/select_state_btn" />
 
     <SeekBar
         android:id="@+id/time_seekbar"
@@ -95,21 +96,22 @@
 
     <Button
         android:id="@+id/refresh_btn"
+        style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="97dp"
         android:layout_height="38dp"
-        android:layout_marginTop="16dp"
         android:text="@string/refresh_btn"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintEnd_toEndOf="@+id/speed_seekbar"
-        app:layout_constraintTop_toBottomOf="@+id/current_state_label" />
+        app:layout_constraintTop_toTopOf="@+id/state_text_label" />
 
     <Button
         android:id="@+id/update_state_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/update_btn"
         app:layout_constraintEnd_toEndOf="@+id/time_seekbar"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="@+id/time_seekbar"
         app:layout_constraintTop_toBottomOf="@+id/direction_switch" />
 
@@ -125,10 +127,9 @@
         android:id="@+id/fwd_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="@string/jog_fwd_btn"
         app:layout_constraintStart_toStartOf="@+id/receive_text"
-        app:layout_constraintTop_toBottomOf="@+id/update_state_button" />
+        app:layout_constraintTop_toTopOf="@+id/update_state_button" />
 
     <Button
         android:id="@+id/start_btn"
@@ -176,21 +177,26 @@
 
     <Button
         android:id="@+id/select_state_btn"
+        style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
-        android:layout_height="38dp"
+        android:layout_height="0dp"
         android:text="@string/select_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintBottom_toBottomOf="@+id/refresh_btn"
-        app:layout_constraintStart_toStartOf="@+id/current_state_label"
-        app:layout_constraintTop_toTopOf="@+id/refresh_btn" />
+        app:layout_constraintStart_toStartOf="@+id/get_current_btn"
+        app:layout_constraintTop_toTopOf="@+id/refresh_btn"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/state_text_label"
         android:layout_width="96dp"
         android:layout_height="19dp"
+        android:layout_marginTop="40dp"
         android:text="@string/state_text"
         app:layout_constraintEnd_toStartOf="@+id/refresh_btn"
+        app:layout_constraintHorizontal_bias="0.596"
         app:layout_constraintStart_toEndOf="@+id/select_state_btn"
-        app:layout_constraintTop_toTopOf="@+id/select_state_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/get_current_btn" />
 
     <TextView
         android:id="@+id/motor_speed_value"
@@ -239,4 +245,15 @@
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/current_time_label"
         app:layout_constraintTop_toTopOf="@+id/current_time_label" />
+
+    <Button
+        android:id="@+id/get_current_btn"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="68dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="8dp"
+        android:text="Get "
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toStartOf="@+id/connected_label"
+        app:layout_constraintTop_toBottomOf="@+id/connected_label" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,17 @@ public class MotorState {
         this.gate = gate;
     }
 
+    /*
+        Constructor for creating copies of a motor state
+     */
+    public MotorState(MotorState state){
+        this.name = state.name;
+        this.mSpeed = state.mSpeed;
+        this.stateTime = state.stateTime;
+        this.mDirection = state.mDirection;
+        this.gate = state.gate;
+    }
+
     @Override
     public String toString() { return this.name; }
 }

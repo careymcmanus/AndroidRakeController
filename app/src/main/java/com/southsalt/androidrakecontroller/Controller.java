@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -186,6 +188,9 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         mJogBackBtn = view.findViewById(R.id.back_btn);
         mStartBtn = view.findViewById(R.id.start_btn);
         mStopBtn = view.findViewById(R.id.stop_btn);
+        Button getCurrentBtn = view.findViewById(R.id.get_current_btn);
+        getCurrentBtn.setOnClickListener(v -> {getCurrentState();});
+
         Button stateSelectBtn = view.findViewById(R.id.select_state_btn);
         Button updateBtn = view.findViewById(R.id.update_state_button);
         updateBtn.setOnClickListener(v -> {updateArduino();});
@@ -240,7 +245,19 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         });
 
         mDirSwitch = view.findViewById(R.id.direction_switch);
+        mDirSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mEditingState.mDirection = isChecked;
+            }
+        });
         mGateSwitch = view.findViewById(R.id.gate_switch);
+        mGateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mEditingState.gate = isChecked;
+            }
+        });
 
         /*
          * Builds and alert dialog box for selecting state to edit
@@ -250,7 +267,7 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
         builder.setAdapter(mMotorStateListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mEditingState = motorStates.get(which);
+                mEditingState = new MotorState(motorStates.get(which));
                 editingStateText.setText(mEditingState.name);
                 Integer speed = mEditingState.mSpeed;
                 Integer time = mEditingState.stateTime;
@@ -302,11 +319,26 @@ public class Controller extends Fragment implements ServiceConnection, SerialLis
 
 
 
+
     private void updateArduino() {
         if (mEditingState == null)
             return;
 
-        send(getString(R.string.get_current_cmd));
+        send(
+                getString(R.string.set_start) +
+                        "{\"name\":\"" +
+                        mEditingState.name +
+                        "\", \"speed\":" +
+                        mEditingState.mSpeed +
+                        ", \"time\":" +
+                        mEditingState.stateTime +
+                        ", \"dir\":" +
+                        mEditingState.mDirection +
+                        ", \"gate\":" +
+                        mEditingState.gate +
+                        "}" +
+                        getString(R.string.set_finish));
+
     }
 
     private void updateCurrentStateText() {
